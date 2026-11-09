@@ -91,4 +91,3 @@ func main() {
 	reset(js.Undefined(), nil)
 	select {}
 }
- Я код написал
