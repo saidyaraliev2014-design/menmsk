@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Survival</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #101820;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+h1 { color: #55d6ff; }
+#game {
+  width: 100%;
+  height: 65vh;
+  background: linear-gradient(#79b8dc, #294b37);
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+}
+#player {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 48px;
+  transform: translate(-50%, -50%);
+}
+button {
+  background: #168bd2;
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin: 8px;
+  font-size: 18px;
+}
+#status { padding: 12px; }
+</style>
+</head>
+<body>
+<h1>3D SURVIVAL</h1>
+<div id="status">Загрузка игры...</div>
+<div id="game">
+  <div id="player">🧍</div>
+</div>
+<div>
+  <button onclick="move(-1,0)">⬅️</button>
+  <button onclick="move(0,-1)">⬆️</button>
+  <button onclick="move(0,1)">⬇️</button>
+  <button onclick="move(1,0)">➡️</button>
+</div>
+<script>
+let x = 0, z = 0;
+function move(dx,dz) {
+  x += dx * 15;
+  z += dz * 15;
+  x = Math.max(-40,Math.min(40,x));
+  z = Math.max(-40,Math.min(40,z));
+  document.getElementById("player").style.left =
+    (50+x/2)+"%";
+  document.getElementById("player").style.top =
+    (50+z/2)+"%";
+}
+</script>
+<script src="wasm_exec.js"></script>
+<script>
+if (typeof Go !== "undefined") {
+  const go = new Go();
+  WebAssembly.instantiateStreaming(
+    fetch("main.wasm"), go.importObject
+  ).then(result => {
+    go.run(result.instance);
+  }).catch(() => {
+    document.getElementById("status").textContent =
+      "Игра загружена в HTML. Ожидание Go WASM...";
+  });
+}
+</script>
+</body>
+</html>
